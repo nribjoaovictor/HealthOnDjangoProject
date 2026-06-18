@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard Médico - HealthOn{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="fw-bold mb-1">Dashboard Médico</h1>
+            <p class="text-muted mb-0">Gerencie pacientes e prescrições digitais.</p>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body">
+                    <h6 class="text-muted">Pacientes</h6>
+                    <h2 class="fw-bold">{{ total_pacientes|default:"0" }}</h2>
+                    <p class="text-muted mb-0">Pacientes cadastrados</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body">
+                    <h6 class="text-muted">Prescrições</h6>
+                    <h2 class="fw-bold">{{ total_prescricoes|default:"0" }}</h2>
+                    <p class="text-muted mb-0">Prescrições emitidas</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body">
+                    <h6 class="text-muted">Validações</h6>
+                    <h2 class="fw-bold">0</h2>
+                    <p class="text-muted mb-0">Pendências de validação</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+                <div class="card-body p-4">
+                    <h4 class="fw-bold">Pacientes</h4>
+                    <p class="text-muted">Cadastre, edite e consulte pacientes vinculados ao médico.</p>
+
+                    <a href="{% url 'paciente_list' %}" class="btn btn-success">
+                        Gerenciar pacientes
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+                <div class="card-body p-4">
+                    <h4 class="fw-bold">Prescrições</h4>
+                    <p class="text-muted">Área reservada para emissão e histórico de receitas digitais.</p>
+
+                    <a href="{% url 'prescricao_list' %}" class="btn btn-success">
+                        Gerenciar prescrições
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}Excluir Paciente - HealthOn{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-body p-4">
+            <h1 class="fw-bold mb-3">Excluir paciente</h1>
+
+            <p class="text-muted">
+                Tem certeza que deseja excluir o paciente
+                <strong>{{ paciente.nome }}</strong>?
+            </p>
+
+            <form method="post">
+                {% csrf_token %}
+
+                <button type="submit" class="btn btn-danger">
+                    Sim, excluir
+                </button>
+
+                <a href="{% url 'paciente_list' %}" class="btn btn-outline-secondary">
+                    Cancelar
+                </a>
+            </form>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

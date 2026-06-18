@@ -1,0 +1,130 @@
+[
+{
+    "model": "usuarios.paciente",
+    "pk": 2,
+    "fields": {
+        "nome": "Maria Silva",
+        "cpf": "11111111111",
+        "rg": "1234567",
+        "data_nascimento": "1984-05-10",
+        "sexo": "F",
+        "endereco": "Rua das Flores, 100",
+        "telefone": "27999999999",
+        "email": "maria@email.com",
+        "gov_validado": true,
+        "criado_em": "2026-06-18T01:16:08.450Z"
+    }
+},
+{
+    "model": "usuarios.paciente",
+    "pk": 3,
+    "fields": {
+        "nome": "João Souza",
+        "cpf": "44444444444",
+        "rg": "7654321",
+        "data_nascimento": "1997-09-22",
+        "sexo": "M",
+        "endereco": "Av. Central, 250",
+        "telefone": "27988888888",
+        "email": "joao@email.com",
+        "gov_validado": true,
+        "criado_em": "2026-06-18T01:16:08.455Z"
+    }
+},
+{
+    "model": "usuarios.usuariofake",
+    "pk": 4,
+    "fields": {
+        "nome": "Dr. Rafael Almeida",
+        "documento": "22222222222",
+        "senha": "123",
+        "perfil": "medico",
+        "gov_validado": true
+    }
+},
+{
+    "model": "usuarios.usuariofake",
+    "pk": 5,
+    "fields": {
+        "nome": "Farmácia Central",
+        "documento": "33333333333",
+        "senha": "123",
+        "perfil": "farmacia",
+        "gov_validado": true
+    }
+},
+{
+    "model": "usuarios.usuariofake",
+    "pk": 6,
+    "fields": {
+        "nome": "Maria Silva",
+        "documento": "11111111111",
+        "senha": "123",
+        "perfil": "paciente",
+        "gov_validado": true
+    }
+},
+{
+    "model": "usuarios.usuariofake",
+    "pk": 7,
+    "fields": {
+        "nome": "João Souza",
+        "documento": "44444444444",
+        "senha": "123",
+        "perfil": "paciente",
+        "gov_validado": true
+    }
+},
+{
+    "model": "usuarios.prescricao",
+    "pk": 2,
+    "fields": {
+        "paciente": 2,
+        "medicamento": "Clonazepam",
+        "dosagem": "0,5 mg",
+        "orientacoes": "Tomar 1 comprimido à noite por 30 dias.",
+        "data_emissao": "2026-06-17",
+        "data_validade": "2026-12-30",
+        "status": "ativa"
+    }
+},
+{
+    "model": "usuarios.prescricao",
+    "pk": 3,
+    "fields": {
+        "paciente": 2,
+        "medicamento": "Sertralina",
+        "dosagem": "50 mg",
+        "orientacoes": "Tomar 1 comprimido pela manhã.",
+        "data_emissao": "2026-06-17",
+        "data_validade": "2026-11-20",
+        "status": "ativa"
+    }
+},
+{
+    "model": "usuarios.prescricao",
+    "pk": 4,
+    "fields": {
+        "paciente": 3,
+        "medicamento": "Venvanse",
+        "dosagem": "30 mg",
+        "orientacoes": "Tomar 1 cápsula pela manhã.",
+        "data_emissao": "2026-06-17",
+        "data_validade": "2026-10-15",
+        "status": "ativa"
+    }
+},
+{
+    "model": "usuarios.prescricao",
+    "pk": 5,
+    "fields": {
+        "paciente": 3,
+        "medicamento": "Ritalina",
+        "dosagem": "10 mg",
+        "orientacoes": "Tomar conforme orientação médica.",
+        "data_emissao": "2026-06-17",
+        "data_validade": "2026-09-10",
+        "status": "dispensada"
+    }
+}
+]

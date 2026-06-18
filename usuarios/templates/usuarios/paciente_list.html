@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block title %}Pacientes - HealthOn{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="fw-bold mb-1">Pacientes</h1>
+            <p class="text-muted mb-0">Gerencie os pacientes cadastrados no sistema.</p>
+        </div>
+
+        <a href="{% url 'paciente_create' %}" class="btn btn-success">
+            <i class="bi bi-plus-circle me-1"></i>
+            Novo paciente
+        </a>
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-body">
+
+            {% if pacientes %}
+            <div class="table-responsive">
+                <table class="table align-middle">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>CPF</th>
+                            <th>E-mail</th>
+                            <th>Gov.br</th>
+                            <th class="text-end">Ações</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for paciente in pacientes %}
+                        <tr>
+                            <td>{{ paciente.nome }}</td>
+                            <td>{{ paciente.cpf }}</td>
+                            <td>{{ paciente.email|default:"-" }}</td>
+                            <td>
+                                {% if paciente.gov_validado %}
+                                    <span class="badge text-bg-success">Validado</span>
+                                {% else %}
+                                    <span class="badge text-bg-secondary">Pendente</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-end">
+                                <a href="{% url 'paciente_update' paciente.id %}" class="btn btn-sm btn-outline-primary">
+                                    Editar
+                                </a>
+                                <a href="{% url 'paciente_delete' paciente.id %}" class="btn btn-sm btn-outline-danger">
+                                    Excluir
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+                <p class="text-muted mb-0">Nenhum paciente cadastrado ainda.</p>
+            {% endif %}
+
+        </div>
+    </div>
+
+    <a href="{% url 'dashboard_medico' %}" class="btn btn-link mt-3 text-decoration-none">
+        Voltar para dashboard
+    </a>
+</div>
+{% endblock %}

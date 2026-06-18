@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+
+{% block title %}Login - HealthOn{% endblock %}
+
+{% block content %}
+<div class="login-page">
+    <div class="login-card">
+
+        <div class="mb-4">
+            <h2 class="fw-bold mb-1">
+                <span class="logo-text">HealthOn</span>
+            </h2>
+            <p class="text-muted mb-0">Acesse sua conta para gerenciar prescrições digitais</p>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <input type="hidden" name="perfil" id="perfilSelecionado" value="paciente">
+
+            <div class="row g-3 mb-4">
+                <div class="col-md-4">
+                    <div class="profile-option active text-center" data-perfil="paciente">
+                        <div class="profile-icon">
+                            <i class="bi bi-person-heart"></i>
+                        </div>
+                        <h6 class="fw-bold mb-1">Paciente</h6>
+                        <small class="text-muted">Consultar receitas</small>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="profile-option text-center" data-perfil="medico">
+                        <div class="profile-icon">
+                            <i class="bi bi-clipboard2-pulse"></i>
+                        </div>
+                        <h6 class="fw-bold mb-1">Médico</h6>
+                        <small class="text-muted">Emitir prescrições</small>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="profile-option text-center" data-perfil="farmacia">
+                        <div class="profile-icon">
+                            <i class="bi bi-capsule"></i>
+                        </div>
+                        <h6 class="fw-bold mb-1">Farmácia</h6>
+                        <small class="text-muted">Validar receitas</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-semibold">CPF, CRM ou CNPJ</label>
+                <input type="text" class="form-control" name="documento" placeholder="Digite seu documento">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Senha</label>
+                <input type="password" class="form-control" name="senha" placeholder="Digite sua senha">
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="lembrar">
+                    <label class="form-check-label" for="lembrar">Lembrar acesso</label>
+                </div>
+
+                <a href="#" class="text-decoration-none">Esqueci minha senha</a>
+            </div>
+
+            <button type="submit" class="btn btn-health w-100 mb-3">
+                Entrar
+            </button>
+
+            <button type="button" class="btn btn-outline-primary btn-gov w-100">
+                <i class="bi bi-shield-check me-2"></i>
+                Entrar com Gov.br
+            </button>
+
+            <p class="text-center text-muted mt-4 mb-0">
+                Não possui conta?
+                <a href="#" class="text-decoration-none fw-semibold">Cadastre-se</a>
+            </p>
+        </form>
+
+    </div>
+</div>
+
+<script>
+    const cards = document.querySelectorAll('.profile-option');
+    const inputPerfil = document.getElementById('perfilSelecionado');
+
+    cards.forEach(card => {
+        card.addEventListener('click', () => {
+            cards.forEach(c => c.classList.remove('active'));
+            card.classList.add('active');
+            inputPerfil.value = card.dataset.perfil;
+        });
+    });
+</script>
+{% endblock %}

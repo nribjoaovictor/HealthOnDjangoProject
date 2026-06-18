@@ -1,0 +1,50 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-success shadow-sm">
+    <div class="container">
+
+        <a class="navbar-brand fw-bold" href="#">
+            HealthOn
+        </a>
+
+        <div class="collapse navbar-collapse">
+
+            <ul class="navbar-nav me-auto">
+
+                {% if request.session.perfil == "medico" %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'dashboard_medico' %}">Dashboard</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'paciente_list' %}">Pacientes</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'prescricao_list' %}">Prescrições</a>
+                    </li>
+                {% endif %}
+
+                {% if request.session.perfil == "paciente" %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'dashboard_paciente' %}">Minhas prescrições</a>
+                    </li>
+                {% endif %}
+
+                {% if request.session.perfil == "farmacia" %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'dashboard_farmacia' %}">Validação</a>
+                    </li>
+                {% endif %}
+
+            </ul>
+
+            <span class="navbar-text me-3">
+                {{ request.session.usuario_nome }}
+            </span>
+
+            <a href="{% url 'logout' %}" class="btn btn-light btn-sm">
+                Sair
+            </a>
+
+        </div>
+    </div>
+</nav>

@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-5">
+
+    <h1 class="mb-4">
+        {% if prescricao %}
+            Editar Prescrição
+        {% else %}
+            Nova Prescrição
+        {% endif %}
+    </h1>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+
+            <form method="post">
+
+                {% csrf_token %}
+
+                {% for field in form %}
+                    <div class="mb-3">
+                        <label class="form-label">
+                            {{ field.label }}
+                        </label>
+
+                        {{ field }}
+
+                        {% if field.errors %}
+                            <div class="text-danger small">
+                                {{ field.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+
+                <button class="btn btn-success">
+                    Salvar
+                </button>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>
+{% endblock %}

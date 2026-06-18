@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-5">
+
+    <div class="d-flex justify-content-between mb-4">
+        <h1>Prescrições</h1>
+
+        <a href="{% url 'prescricao_create' %}"
+           class="btn btn-success">
+            Nova Prescrição
+        </a>
+    </div>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Paciente</th>
+                <th>Medicamento</th>
+                <th>Dosagem</th>
+                <th>Status</th>
+                <th>Validade</th>
+                <th></th>
+            </tr>
+        </thead>
+
+        <tbody>
+        {% for prescricao in prescricoes %}
+            <tr>
+                <td>{{ prescricao.paciente.nome }}</td>
+                <td>{{ prescricao.medicamento }}</td>
+                <td>{{ prescricao.dosagem }}</td>
+                <td>{{ prescricao.get_status_display }}</td>
+                <td>{{ prescricao.data_validade }}</td>
+
+                <td>
+                    <a href="{% url 'prescricao_update' prescricao.id %}"
+                       class="btn btn-sm btn-primary">
+                        Editar
+                    </a>
+
+                    <a href="{% url 'prescricao_delete' prescricao.id %}"
+                       class="btn btn-sm btn-danger">
+                        Excluir
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+
+    </table>
+
+</div>
+{% endblock %}
