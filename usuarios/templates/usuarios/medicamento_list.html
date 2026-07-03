@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block title %}Medicamentos - HealthOn{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="fw-bold mb-1">Medicamentos</h1>
+            <p class="text-muted mb-0">Gerencie os medicamentos cadastrados.</p>
+        </div>
+
+        <a href="{% url 'medicamento_create' %}" class="btn btn-success">
+            Novo medicamento
+        </a>
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-body">
+
+            {% if medicamentos %}
+            <table class="table align-middle">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Dosagem</th>
+                        <th>Tarja</th>
+                        <th>Prescrição?</th>
+                        <th>Ativo</th>
+                        <th class="text-end">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for medicamento in medicamentos %}
+                    <tr>
+                        <td>{{ medicamento.nome }}</td>
+                        <td>{{ medicamento.dosagem }}</td>
+                        <td>{{ medicamento.get_tarja_display }}</td>
+                        <td>
+                            {% if medicamento.exige_prescricao %}
+                                <span class="badge text-bg-warning">Exige</span>
+                            {% else %}
+                                <span class="badge text-bg-secondary">Não exige</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if medicamento.ativo %}
+                                <span class="badge text-bg-success">Ativo</span>
+                            {% else %}
+                                <span class="badge text-bg-danger">Inativo</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-end">
+                            <a href="{% url 'medicamento_update' medicamento.id %}" class="btn btn-sm btn-outline-primary">Editar</a>
+                            <a href="{% url 'medicamento_delete' medicamento.id %}" class="btn btn-sm btn-outline-danger">Excluir</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+                <p class="text-muted mb-0">Nenhum medicamento cadastrado.</p>
+            {% endif %}
+
+        </div>
+    </div>
+
+</div>
+{% endblock %}

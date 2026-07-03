@@ -1,54 +1,107 @@
 {% extends 'base.html' %}
 
+{% block title %}Prescrições - HealthOn{% endblock %}
+
 {% block content %}
 <div class="container py-5">
 
-    <div class="d-flex justify-content-between mb-4">
-        <h1>Prescrições</h1>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="fw-bold mb-1">Prescrições</h1>
+            <p class="text-muted mb-0">
+                Gerencie as prescrições médicas emitidas.
+            </p>
+        </div>
 
-        <a href="{% url 'prescricao_create' %}"
-           class="btn btn-success">
+        <a href="{% url 'prescricao_create' %}" class="btn btn-success">
+            <i class="bi bi-plus-circle me-1"></i>
             Nova Prescrição
         </a>
     </div>
 
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Paciente</th>
-                <th>Medicamento</th>
-                <th>Dosagem</th>
-                <th>Status</th>
-                <th>Validade</th>
-                <th></th>
-            </tr>
-        </thead>
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-body">
 
-        <tbody>
-        {% for prescricao in prescricoes %}
-            <tr>
-                <td>{{ prescricao.paciente.nome }}</td>
-                <td>{{ prescricao.medicamento }}</td>
-                <td>{{ prescricao.dosagem }}</td>
-                <td>{{ prescricao.get_status_display }}</td>
-                <td>{{ prescricao.data_validade }}</td>
+            {% if prescricoes %}
+            <div class="table-responsive">
+                <table class="table align-middle">
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Paciente</th>
+                            <th>Médico</th>
+                            <th>Status</th>
+                            <th>Validade</th>
+                            <th class="text-end">Ações</th>
+                        </tr>
+                    </thead>
 
-                <td>
-                    <a href="{% url 'prescricao_update' prescricao.id %}"
-                       class="btn btn-sm btn-primary">
-                        Editar
-                    </a>
+                    <tbody>
+                        {% for prescricao in prescricoes %}
+                        <tr>
 
-                    <a href="{% url 'prescricao_delete' prescricao.id %}"
-                       class="btn btn-sm btn-danger">
-                        Excluir
-                    </a>
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
+                            <td>{{ prescricao.codigo_identificacao }}</td>
 
-    </table>
+                            <td>{{ prescricao.paciente.nome }}</td>
+
+                            <td>{{ prescricao.medico.nome }}</td>
+
+                            <td>
+                                {% if prescricao.status == "ativa" %}
+                                    <span class="badge text-bg-success">Ativa</span>
+
+                                {% elif prescricao.status == "vencida" %}
+                                    <span class="badge text-bg-danger">Vencida</span>
+
+                                {% elif prescricao.status == "dispensada" %}
+                                    <span class="badge text-bg-secondary">Dispensada</span>
+
+                                {% else %}
+                                    {{ prescricao.get_status_display }}
+                                {% endif %}
+                            </td>
+
+                            <td>{{ prescricao.data_validade }}</td>
+
+                            <td class="text-end">
+
+                                <a href="{% url 'prescricao_detail' prescricao.id %}"
+                                   class="btn btn-sm btn-success">
+                                    Medicamentos
+                                </a>
+
+                                <a href="{% url 'prescricao_update' prescricao.id %}"
+                                   class="btn btn-sm btn-outline-primary">
+                                    Editar
+                                </a>
+
+                                <a href="{% url 'prescricao_delete' prescricao.id %}"
+                                   class="btn btn-sm btn-outline-danger">
+                                    Excluir
+                                </a>
+
+                            </td>
+
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+
+                </table>
+            </div>
+
+            {% else %}
+                <p class="text-muted mb-0">
+                    Nenhuma prescrição cadastrada.
+                </p>
+            {% endif %}
+
+        </div>
+    </div>
+
+    <a href="{% url 'dashboard_medico' %}"
+       class="btn btn-link mt-3 text-decoration-none">
+        Voltar para dashboard
+    </a>
 
 </div>
 {% endblock %}

@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block title %}Farmacêuticos - HealthOn{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="fw-bold mb-1">Farmacêuticos</h1>
+            <p class="text-muted mb-0">Gerencie os farmacêuticos vinculados às farmácias.</p>
+        </div>
+
+        <a href="{% url 'farmaceutico_create' %}" class="btn btn-success">
+            Novo Farmacêutico
+        </a>
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-body">
+
+            {% if farmaceuticos %}
+            <div class="table-responsive">
+                <table class="table align-middle">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>CPF</th>
+                            <th>CRF</th>
+                            <th>Farmácia</th>
+                            <th>Gov.br</th>
+                            <th class="text-end">Ações</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                    {% for farmaceutico in farmaceuticos %}
+                        <tr>
+                            <td>{{ farmaceutico.nome }}</td>
+                            <td>{{ farmaceutico.cpf }}</td>
+                            <td>{{ farmaceutico.crf }}</td>
+                            <td>{{ farmaceutico.farmacia.nome|default:"-" }}</td>
+                            <td>
+                                {% if farmaceutico.gov_validado %}
+                                    <span class="badge text-bg-success">Validado</span>
+                                {% else %}
+                                    <span class="badge text-bg-secondary">Pendente</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-end">
+                                <a href="{% url 'farmaceutico_update' farmaceutico.id %}" class="btn btn-sm btn-outline-primary">
+                                    Editar
+                                </a>
+                                <a href="{% url 'farmaceutico_delete' farmaceutico.id %}" class="btn btn-sm btn-outline-danger">
+                                    Excluir
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+                <p class="text-muted mb-0">Nenhum farmacêutico cadastrado.</p>
+            {% endif %}
+
+        </div>
+    </div>
+
+</div>
+{% endblock %}

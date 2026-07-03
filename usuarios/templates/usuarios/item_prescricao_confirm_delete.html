@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}Remover Medicamento - HealthOn{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-body p-4">
+            <h3>Remover medicamento</h3>
+
+            <p>
+                Deseja remover
+                <strong>{{ item.medicamento.nome }} - {{ item.medicamento.dosagem }}</strong>
+                desta prescrição?
+            </p>
+
+            <form method="post">
+                {% csrf_token %}
+                <button class="btn btn-danger">Remover</button>
+                <a href="{% url 'prescricao_detail' item.prescricao.id %}" class="btn btn-secondary">Cancelar</a>
+            </form>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

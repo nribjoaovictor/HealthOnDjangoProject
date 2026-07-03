@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}Excluir Farmácia{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-body">
+
+            <h3>Excluir Farmácia</h3>
+
+            <p>
+
+                Deseja realmente excluir
+
+                <strong>{{ farmacia.nome }}</strong>?
+
+            </p>
+
+            <form method="post">
+
+                {% csrf_token %}
+
+                <button class="btn btn-danger">
+
+                    Excluir
+
+                </button>
+
+                <a href="{% url 'farmacia_list' %}"
+                   class="btn btn-secondary">
+
+                    Cancelar
+
+                </a>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}Medicamento - HealthOn{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+
+    <h1 class="fw-bold mb-4">
+        {% if medicamento %}Editar medicamento{% else %}Novo medicamento{% endif %}
+    </h1>
+
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-body p-4">
+
+            <form method="post">
+                {% csrf_token %}
+
+                {% for field in form %}
+                    <div class="mb-3">
+                        {% if field.field.widget.input_type == "checkbox" %}
+                            <div class="form-check">
+                                {{ field }}
+                                <label class="form-check-label" for="{{ field.id_for_label }}">
+                                    {{ field.label }}
+                                </label>
+                            </div>
+                        {% else %}
+                            <label class="form-label fw-semibold" for="{{ field.id_for_label }}">
+                                {{ field.label }}
+                            </label>
+                            {{ field }}
+                        {% endif %}
+                    </div>
+                {% endfor %}
+
+                <button class="btn btn-success">Salvar</button>
+                <a href="{% url 'medicamento_list' %}" class="btn btn-outline-secondary">Cancelar</a>
+            </form>
+
+        </div>
+    </div>
+
+</div>
+{% endblock %}

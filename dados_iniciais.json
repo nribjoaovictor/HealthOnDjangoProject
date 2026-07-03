@@ -1,6 +1,24 @@
 [
 {
-    "model": "usuarios.paciente",
+    "model": "usuarios.pessoa",
+    "pk": 1,
+    "fields": {
+        "nome": "Dr. Rafael Almeida",
+        "cpf": "22222222222",
+        "rg": null,
+        "data_nascimento": null,
+        "sexo": null,
+        "telefone": null,
+        "email": null,
+        "login": "22222222222",
+        "senha": "123",
+        "gov_validado": true,
+        "endereco": null,
+        "criado_em": "2026-07-02T23:52:32.427Z"
+    }
+},
+{
+    "model": "usuarios.pessoa",
     "pk": 2,
     "fields": {
         "nome": "Maria Silva",
@@ -8,32 +26,120 @@
         "rg": "1234567",
         "data_nascimento": "1984-05-10",
         "sexo": "F",
-        "endereco": "Rua das Flores, 100",
         "telefone": "27999999999",
         "email": "maria@email.com",
+        "login": "11111111111",
+        "senha": "123",
         "gov_validado": true,
-        "criado_em": "2026-06-18T01:16:08.450Z"
+        "endereco": null,
+        "criado_em": "2026-07-02T23:52:32.439Z"
+    }
+},
+{
+    "model": "usuarios.pessoa",
+    "pk": 4,
+    "fields": {
+        "nome": "joao",
+        "cpf": "16816816899",
+        "rg": "888888888",
+        "data_nascimento": "2003-12-04",
+        "sexo": "M",
+        "telefone": "27999999999",
+        "email": "teste@gmail.com",
+        "login": "16816816899",
+        "senha": "123",
+        "gov_validado": true,
+        "endereco": null,
+        "criado_em": "2026-07-03T00:01:29.940Z"
     }
 },
 {
     "model": "usuarios.paciente",
+    "pk": 2,
+    "fields": {}
+},
+{
+    "model": "usuarios.paciente",
+    "pk": 4,
+    "fields": {}
+},
+{
+    "model": "usuarios.medico",
+    "pk": 1,
+    "fields": {
+        "crm": "CRM-ES-12345",
+        "especialidade": "clinico_geral"
+    }
+},
+{
+    "model": "usuarios.farmacia",
+    "pk": 1,
+    "fields": {
+        "nome": "Farmácia Central",
+        "cnpj": "33333333333",
+        "telefone": null,
+        "email": null,
+        "login": "33333333333",
+        "senha": "123",
+        "gov_validado": true,
+        "endereco": null
+    }
+},
+{
+    "model": "usuarios.medicamento",
+    "pk": 2,
+    "fields": {
+        "nome": "teste",
+        "principio_ativo": "teste",
+        "dosagem": "100mg",
+        "fabricante": "teste",
+        "tarja": "vermelha",
+        "exige_prescricao": true,
+        "ativo": true
+    }
+},
+{
+    "model": "usuarios.prescricaomedica",
+    "pk": 2,
+    "fields": {
+        "codigo_identificacao": "123",
+        "paciente": 4,
+        "medico": 1,
+        "data_emissao": "2026-07-02",
+        "data_validade": "2029-12-12",
+        "orientacoes": "teste",
+        "status": "ativa"
+    }
+},
+{
+    "model": "usuarios.prescricaomedica",
     "pk": 3,
     "fields": {
-        "nome": "João Souza",
-        "cpf": "44444444444",
-        "rg": "7654321",
-        "data_nascimento": "1997-09-22",
-        "sexo": "M",
-        "endereco": "Av. Central, 250",
-        "telefone": "27988888888",
-        "email": "joao@email.com",
-        "gov_validado": true,
-        "criado_em": "2026-06-18T01:16:08.455Z"
+        "codigo_identificacao": "154",
+        "paciente": 4,
+        "medico": 1,
+        "data_emissao": "2026-07-02",
+        "data_validade": "2072-12-15",
+        "orientacoes": "",
+        "status": "ativa"
+    }
+},
+{
+    "model": "usuarios.prescricaomedica",
+    "pk": 4,
+    "fields": {
+        "codigo_identificacao": "5487",
+        "paciente": 2,
+        "medico": 1,
+        "data_emissao": "2026-07-02",
+        "data_validade": "2028-12-16",
+        "orientacoes": "",
+        "status": "ativa"
     }
 },
 {
     "model": "usuarios.usuariofake",
-    "pk": 4,
+    "pk": 1,
     "fields": {
         "nome": "Dr. Rafael Almeida",
         "documento": "22222222222",
@@ -44,18 +150,7 @@
 },
 {
     "model": "usuarios.usuariofake",
-    "pk": 5,
-    "fields": {
-        "nome": "Farmácia Central",
-        "documento": "33333333333",
-        "senha": "123",
-        "perfil": "farmacia",
-        "gov_validado": true
-    }
-},
-{
-    "model": "usuarios.usuariofake",
-    "pk": 6,
+    "pk": 2,
     "fields": {
         "nome": "Maria Silva",
         "documento": "11111111111",
@@ -66,7 +161,7 @@
 },
 {
     "model": "usuarios.usuariofake",
-    "pk": 7,
+    "pk": 3,
     "fields": {
         "nome": "João Souza",
         "documento": "44444444444",
@@ -76,55 +171,25 @@
     }
 },
 {
-    "model": "usuarios.prescricao",
-    "pk": 2,
-    "fields": {
-        "paciente": 2,
-        "medicamento": "Clonazepam",
-        "dosagem": "0,5 mg",
-        "orientacoes": "Tomar 1 comprimido à noite por 30 dias.",
-        "data_emissao": "2026-06-17",
-        "data_validade": "2026-12-30",
-        "status": "ativa"
-    }
-},
-{
-    "model": "usuarios.prescricao",
-    "pk": 3,
-    "fields": {
-        "paciente": 2,
-        "medicamento": "Sertralina",
-        "dosagem": "50 mg",
-        "orientacoes": "Tomar 1 comprimido pela manhã.",
-        "data_emissao": "2026-06-17",
-        "data_validade": "2026-11-20",
-        "status": "ativa"
-    }
-},
-{
-    "model": "usuarios.prescricao",
+    "model": "usuarios.usuariofake",
     "pk": 4,
     "fields": {
-        "paciente": 3,
-        "medicamento": "Venvanse",
-        "dosagem": "30 mg",
-        "orientacoes": "Tomar 1 cápsula pela manhã.",
-        "data_emissao": "2026-06-17",
-        "data_validade": "2026-10-15",
-        "status": "ativa"
+        "nome": "Farmácia Central",
+        "documento": "33333333333",
+        "senha": "123",
+        "perfil": "farmacia",
+        "gov_validado": true
     }
 },
 {
-    "model": "usuarios.prescricao",
+    "model": "usuarios.usuariofake",
     "pk": 5,
     "fields": {
-        "paciente": 3,
-        "medicamento": "Ritalina",
-        "dosagem": "10 mg",
-        "orientacoes": "Tomar conforme orientação médica.",
-        "data_emissao": "2026-06-17",
-        "data_validade": "2026-09-10",
-        "status": "dispensada"
+        "nome": "joao",
+        "documento": "16816816899",
+        "senha": "123",
+        "perfil": "paciente",
+        "gov_validado": true
     }
 }
 ]

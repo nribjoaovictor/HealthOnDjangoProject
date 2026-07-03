@@ -4,7 +4,68 @@
 
 {% block content %}
 <div class="container py-5">
-    <h1 class="fw-bold">Dashboard Farmácia</h1>
-    <p class="text-muted">Valide prescrições e registre dispensações.</p>
+
+    <h1 class="fw-bold mb-1">Dashboard Farmácia</h1>
+    <p class="text-muted mb-4">Valide prescrições e registre dispensações.</p>
+
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-body">
+
+            {% if prescricoes %}
+                <div class="table-responsive">
+                    <table class="table align-middle">
+                        <thead>
+                            <tr>
+                                <th>Paciente</th>
+                                <th>CPF</th>
+                                <th>Medicamento</th>
+                                <th>Dosagem</th>
+                                <th>Validade</th>
+                                <th>Status</th>
+                                <th>Ação</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for prescricao in prescricoes %}
+                            <tr>
+                                <td>{{ prescricao.paciente.nome }}</td>
+                                <td>{{ prescricao.paciente.cpf }}</td>
+                                <td>{{ prescricao.medicamento }}</td>
+                                <td>{{ prescricao.dosagem }}</td>
+                                <td>{{ prescricao.data_validade }}</td>
+                                <td>
+                                    {% if prescricao.status == "ativa" %}
+                                        <span class="badge text-bg-success">Ativa</span>
+                                    {% elif prescricao.status == "vencida" %}
+                                        <span class="badge text-bg-danger">Vencida</span>
+                                    {% else %}
+                                        <span class="badge text-bg-secondary">Dispensada</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if prescricao.status != "dispensada" %}
+                                        <form method="post" action="{% url 'dispensar_prescricao' prescricao.id %}">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-sm btn-success">
+                                                Dispensar
+                                            </button>
+                                        </form>
+                                    {% else %}
+                                        <span class="text-muted">Concluído</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="text-muted mb-0">Nenhuma prescrição encontrada.</p>
+            {% endif %}
+
+        </div>
+    </div>
+
 </div>
 {% endblock %}

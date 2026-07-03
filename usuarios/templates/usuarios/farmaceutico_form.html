@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %}Farmacêutico - HealthOn{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+
+    <h1 class="fw-bold mb-4">
+        {% if farmaceutico %}
+            Editar Farmacêutico
+        {% else %}
+            Novo Farmacêutico
+        {% endif %}
+    </h1>
+
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-body p-4">
+
+            <form method="post">
+                {% csrf_token %}
+
+                {% for field in form %}
+                    <div class="mb-3">
+                        {% if field.field.widget.input_type == "checkbox" %}
+                            <div class="form-check">
+                                {{ field }}
+                                <label class="form-check-label">
+                                    {{ field.label }}
+                                </label>
+                            </div>
+                        {% else %}
+                            <label class="form-label fw-semibold">
+                                {{ field.label }}
+                            </label>
+                            {{ field }}
+                        {% endif %}
+
+                        {% if field.errors %}
+                            <div class="text-danger small mt-1">
+                                {{ field.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+
+                <button class="btn btn-success">Salvar</button>
+                <a href="{% url 'farmaceutico_list' %}" class="btn btn-outline-secondary">Cancelar</a>
+            </form>
+
+        </div>
+    </div>
+
+</div>
+{% endblock %}

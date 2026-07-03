@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+
+{% block title %}Detalhes da Prescrição - HealthOn{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="fw-bold mb-1">Prescrição {{ prescricao.codigo_identificacao }}</h1>
+            <p class="text-muted mb-0">
+                Paciente: {{ prescricao.paciente.nome }} |
+                Médico: {{ prescricao.medico.nome }}
+            </p>
+        </div>
+
+        <a href="{% url 'item_prescricao_create' prescricao.id %}" class="btn btn-success">
+            <i class="bi bi-plus-circle me-1"></i>
+            Adicionar medicamento
+        </a>
+    </div>
+
+    <div class="row g-4 mb-4">
+
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body">
+                    <h6 class="text-muted">Emissão</h6>
+                    <p class="fw-bold mb-0">{{ prescricao.data_emissao }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body">
+                    <h6 class="text-muted">Validade</h6>
+                    <p class="fw-bold mb-0">{{ prescricao.data_validade }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body">
+                    <h6 class="text-muted">Status</h6>
+
+                    {% if prescricao.status == "ativa" %}
+                        <span class="badge text-bg-success">Ativa</span>
+                    {% elif prescricao.status == "vencida" %}
+                        <span class="badge text-bg-danger">Vencida</span>
+                    {% elif prescricao.status == "dispensada" %}
+                        <span class="badge text-bg-secondary">Dispensada</span>
+                    {% else %}
+                        <span class="badge text-bg-warning">{{ prescricao.get_status_display }}</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body">
+                    <h6 class="text-muted">Itens</h6>
+                    <p class="fw-bold mb-0">{{ itens|length }}</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-4 mb-4">
+        <div class="card-body">
+            <h5 class="fw-bold">Orientações gerais</h5>
+            <p class="mb-0">{{ prescricao.orientacoes|default:"Nenhuma orientação geral informada." }}</p>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-body">
+
+            <h4 class="fw-bold mb-3">Medicamentos da prescrição</h4>
+
+            {% if itens %}
+                <div class="table-responsive">
+                    <table class="table align-middle">
+                        <thead>
+                            <tr>
+                                <th>Medicamento</th>
+                                <th>Tarja</th>
+                                <th>Quantidade</th>
+                                <th>Período</th>
+                                <th>Instruções</th>
+                                <th class="text-end">Ações</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for item in itens %}
+                            <tr>
+                                <td>
+                                    <strong>{{ item.medicamento.nome }}</strong><br>
+                                    <small class="text-muted">{{ item.medicamento.dosagem }}</small>
+                                </td>
+
+                                <td>{{ item.medicamento.get_tarja_display }}</td>
+                                <td>{{ item.quantidade }}</td>
+                                <td>{{ item.periodo_tratamento|default:"-" }}</td>
+                                <td>{{ item.instrucoes_uso }}</td>
+
+                                <td class="text-end">
+                                    <a href="{% url 'item_prescricao_delete' item.id %}"
+                                       class="btn btn-sm btn-outline-danger">
+                                        Remover
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="text-muted mb-0">
+                    Nenhum medicamento foi adicionado a esta prescrição.
+                </p>
+            {% endif %}
+
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <a href="{% url 'prescricao_list' %}" class="btn btn-outline-secondary">
+            Voltar para prescrições
+        </a>
+    </div>
+
+</div>
+{% endblock %}
