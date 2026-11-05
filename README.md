@@ -6,11 +6,11 @@ Sistema web desenvolvido em Django para gerenciamento de prescrições médicas 
 
 # Sobre o Projeto
 
-O **HealthOn** é uma aplicação web desenvolvida para a disciplina de **Projeto de Sistemas** do IFES.
+O **HealthOn** é uma aplicação web utilizada na disciplina de **Gerência de Projetos de Software**, do Instituto Federal do Espírito Santo (IFES) — Campus Serra.
 
-O sistema tem como objetivo informatizar o processo de emissão e gerenciamento de prescrições médicas digitais, permitindo que médicos cadastrem pacientes, emitam prescrições, adicionem medicamentos às receitas e que farmácias possam consultar e registrar a dispensação das prescrições.
+O sistema tem como objetivo informatizar o processo de emissão, gerenciamento e validação de prescrições médicas digitais, facilitando o acesso e o controle das receitas por médicos, pacientes e farmácias. A aplicação permite o cadastro de pacientes, a emissão e consulta de prescrições e o registro da dispensação de medicamentos.
 
-O projeto foi desenvolvido utilizando o framework **Django**, seguindo a arquitetura MVC (Model-View-Template), utilizando banco de dados SQLite e interface construída com Bootstrap.
+O projeto utiliza o framework **Django**, banco de dados **SQLite** e interface desenvolvida com **Bootstrap**. O gerenciamento das atividades é realizado por meio das metodologias **Scrum e Kanban**, com organização das funcionalidades em um Product Backlog, planejamento de Sprints e acompanhamento das tarefas pelo Trello.
 
 ---
 
@@ -314,12 +314,8 @@ HealthOn/
 # Desenvolvedores
 
 - Caio Monteiro Rangel
-- Cauã Gilberto Paiva Lainha
 - João Victor Nascimento Ribeiro
 - João Victor Santos Araújo
-- Julia Borges
-- Lívia Rosário
-
 ---
 
 **Projeto desenvolvido para a disciplina de Projeto de Sistemas — IFES Campus Serra.**
