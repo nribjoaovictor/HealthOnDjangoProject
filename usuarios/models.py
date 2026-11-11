@@ -71,7 +71,7 @@ class Pessoa(models.Model):
 
 
 class Paciente(Pessoa):
-    pass
+    cadastrado_por = models.ForeignKey("Medico", on_delete=models.SET_NULL, null=True, blank=True, related_name="pacientes_cadastrados")
 
 
 class Medico(Pessoa):

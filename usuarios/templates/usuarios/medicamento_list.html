@@ -11,9 +11,9 @@
             <p class="text-muted mb-0">Gerencie os medicamentos cadastrados.</p>
         </div>
 
-        <a href="{% url 'medicamento_create' %}" class="btn btn-success">
+        {% if not read_only_demo and request.session.perfil == "medico" %}<a href="{% url 'medicamento_create' %}" class="btn btn-success">
             Novo medicamento
-        </a>
+        </a>{% endif %}
     </div>
 
     <div class="card border-0 shadow-sm rounded-4">
@@ -52,8 +52,8 @@
                             {% endif %}
                         </td>
                         <td class="text-end">
-                            <a href="{% url 'medicamento_update' medicamento.id %}" class="btn btn-sm btn-outline-primary">Editar</a>
-                            <a href="{% url 'medicamento_delete' medicamento.id %}" class="btn btn-sm btn-outline-danger">Excluir</a>
+                            {% if not read_only_demo and request.session.perfil == "medico" %}<a href="{% url 'medicamento_update' medicamento.id %}" class="btn btn-sm btn-outline-primary">Editar</a>{% endif %}
+                            {% if not read_only_demo and request.session.perfil == "medico" %}<a href="{% url 'medicamento_delete' medicamento.id %}" class="btn btn-sm btn-outline-danger">Excluir</a>{% endif %}
                         </td>
                     </tr>
                     {% endfor %}

@@ -11,9 +11,7 @@
             <p class="text-muted">Gerencie as farmácias cadastradas.</p>
         </div>
 
-        <a href="{% url 'farmacia_create' %}" class="btn btn-success">
-            Nova Farmácia
-        </a>
+
     </div>
 
     <div class="card border-0 shadow-sm rounded-4">
@@ -41,15 +39,15 @@
 
                         <td class="text-end">
 
-                            <a href="{% url 'farmacia_update' farmacia.id %}"
+                            {% if not read_only_demo %}<a href="{% url 'farmacia_update' farmacia.id %}"
                                class="btn btn-sm btn-outline-primary">
                                 Editar
-                            </a>
+                            </a>{% endif %}
 
-                            <a href="{% url 'farmacia_delete' farmacia.id %}"
+                            {% if not read_only_demo %}<a href="{% url 'farmacia_delete' farmacia.id %}"
                                class="btn btn-sm btn-outline-danger">
                                 Excluir
-                            </a>
+                            </a>{% endif %}
 
                         </td>
                     </tr>

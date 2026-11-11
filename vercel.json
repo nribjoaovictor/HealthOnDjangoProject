@@ -1,0 +1,9 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "functions": {
+    "healthon/wsgi.py": {
+      "includeFiles": "demo/demo.sqlite3",
+      "excludeFiles": "{db.sqlite3,**/*.sqlite3-journal,**/*.sqlite3-wal,**/*.sqlite3-shm,dados_iniciais.json,.env*,.aws/**,.codex/**,.agents/**,.vscode/**,venv/**,.venv/**}"
+    }
+  }
+}

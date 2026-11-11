@@ -11,10 +11,10 @@
             <p class="text-muted mb-0">Gerencie os pacientes cadastrados no sistema.</p>
         </div>
 
-        <a href="{% url 'paciente_create' %}" class="btn btn-success">
+        {% if not read_only_demo %}<a href="{% url 'paciente_create' %}" class="btn btn-success">
             <i class="bi bi-plus-circle me-1"></i>
             Novo paciente
-        </a>
+        </a>{% endif %}
     </div>
 
     <div class="card border-0 shadow-sm rounded-4">
@@ -47,12 +47,12 @@
                                 {% endif %}
                             </td>
                             <td class="text-end">
-                                <a href="{% url 'paciente_update' paciente.id %}" class="btn btn-sm btn-outline-primary">
+                                {% if not read_only_demo %}<a href="{% url 'paciente_update' paciente.id %}" class="btn btn-sm btn-outline-primary">
                                     Editar
-                                </a>
-                                <a href="{% url 'paciente_delete' paciente.id %}" class="btn btn-sm btn-outline-danger">
+                                </a>{% endif %}
+                                {% if not read_only_demo %}<a href="{% url 'paciente_delete' paciente.id %}" class="btn btn-sm btn-outline-danger">
                                     Excluir
-                                </a>
+                                </a>{% endif %}
                             </td>
                         </tr>
                         {% endfor %}

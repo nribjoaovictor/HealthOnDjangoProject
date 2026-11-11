@@ -14,10 +14,10 @@
             </p>
         </div>
 
-        <a href="{% url 'item_prescricao_create' prescricao.id %}" class="btn btn-success">
+        {% if not read_only_demo and request.session.perfil == "medico" %}<a href="{% url 'item_prescricao_create' prescricao.id %}" class="btn btn-success">
             <i class="bi bi-plus-circle me-1"></i>
             Adicionar medicamento
-        </a>
+        </a>{% endif %}
     </div>
 
     <div class="row g-4 mb-4">
@@ -109,10 +109,10 @@
                                 <td>{{ item.instrucoes_uso }}</td>
 
                                 <td class="text-end">
-                                    <a href="{% url 'item_prescricao_delete' item.id %}"
+                                    {% if not read_only_demo and request.session.perfil == "medico" %}<a href="{% url 'item_prescricao_delete' item.id %}"
                                        class="btn btn-sm btn-outline-danger">
                                         Remover
-                                    </a>
+                                    </a>{% endif %}
                                 </td>
                             </tr>
                             {% endfor %}

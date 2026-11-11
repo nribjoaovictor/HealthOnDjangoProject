@@ -45,12 +45,12 @@
                                 </td>
                                 <td>
                                     {% if prescricao.status != "dispensada" %}
-                                        <form method="post" action="{% url 'dispensar_prescricao' prescricao.id %}">
+                                        {% if not read_only_demo %}<form method="post" action="{% url 'dispensar_prescricao' prescricao.id %}">
                                             {% csrf_token %}
                                             <button type="submit" class="btn btn-sm btn-success">
                                                 Dispensar
                                             </button>
-                                        </form>
+                                        </form>{% endif %}
                                     {% else %}
                                         <span class="text-muted">Concluído</span>
                                     {% endif %}
