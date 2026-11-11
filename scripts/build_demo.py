@@ -42,6 +42,9 @@ def build():
         for profile, entries, field in [('medico', [doctor, other_doctor], 'cpf'), ('farmacia', [pharmacy, other_pharmacy], 'cnpj')]:
             for entry in entries:
                 UsuarioFake.objects.create(nome=entry.nome, documento=getattr(entry, field), perfil=profile, senha='demo123')
+        from usuarios.demo_seed import seed_demo
+        counts = seed_demo()
+        print('Seed acadêmico:', counts)
         connections.close_all()
         os.replace(temporary, target)
     print('Banco fictício gerado em demo/demo.sqlite3; banco local preservado.')

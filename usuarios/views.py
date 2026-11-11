@@ -35,7 +35,11 @@ def dashboard_paciente(request):
     prescricoes = []
 
     if paciente:
-        prescricoes = Prescricao.objects.filter(paciente=paciente).order_by("-data_emissao")
+        prescricoes = (
+            Prescricao.objects.filter(paciente=paciente)
+            .prefetch_related("itens__medicamento")
+            .order_by("-data_emissao")
+        )
 
     return render(request, "usuarios/dashboard_paciente.html", {
         "paciente": paciente,
@@ -48,7 +52,7 @@ def dashboard_farmacia(request):
     if not usuario_logado(request):
         return redirect("login")
 
-    prescricoes = prescriptions(request).order_by("-data_emissao")
+    prescricoes = prescriptions(request).prefetch_related("itens__medicamento").order_by("-data_emissao")
 
     return render(request, "usuarios/dashboard_farmacia.html", {
         "prescricoes": prescricoes

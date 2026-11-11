@@ -453,3 +453,58 @@ A versão de Python está fixada em `.python-version`; mantenha as dependências
 - `immutable=1` exige que o banco não seja alterado durante a execução da função;
   o build gera o arquivo completo e o runtime apenas o lê.
 - Bootstrap e Bootstrap Icons continuam usando o CDN externo já existente.
+
+## Popular os perfis existentes com dados acadêmicos
+
+No ambiente local, com as migrações já aplicadas e o modo somente leitura desativado:
+
+```bash
+venv/bin/python manage.py seed_demo
+```
+
+Se o ambiente virtual estiver ativado, use `python manage.py seed_demo`. O comando
+exige pelo menos um médico, paciente e farmácia já cadastrados; não cria pessoas,
+usuários ou perfis e não modifica senhas. Toda a operação ocorre em uma transação.
+
+O seed disponibiliza um catálogo de 10 medicamentos, com apresentações e
+concentrações ilustrativas, reaproveitando medicamentos equivalentes já existentes.
+Adiciona 12 prescrições com códigos `HO-DEMO-V1-001` a `HO-DEMO-V1-012`, 18 itens,
+os quatro status suportados e, com os dois pacientes do exemplo, 3 dispensações
+(`Venda`) com 5 itens (`ItemVenda`). As receitas são distribuídas entre os pacientes
+existentes; quando há médico responsável cadastrado, o vínculo é respeitado.
+As datas usam a data local do primeiro seed; receitas vencidas têm validade passada.
+Reexecuções preservam as datas e os dados existentes e não duplicam os exemplos.
+Uma colisão de código com registro que não pertence ao seed cancela a transação.
+
+Além disso, receitas anteriores sem medicamentos recebem um item ilustrativo;
+nenhum campo original da receita é sobrescrito. Medicamentos reaproveitados também
+não são alterados. Os totais criados são exibidos ao término do comando. Edições
+posteriores dos exemplos não são sobrescritas nas reexecuções.
+
+O model `Venda` relaciona farmácia, paciente, prescrição e itens, mas não possui
+campo de farmacêutico. O seed utiliza as farmácias existentes e preserva os
+farmacêuticos; não exige/cria funcionários. Não há página própria de vendas no
+sistema: a dispensação aparece como status da receita no dashboard e nas consultas;
+os detalhes financeiros ficam registrados em `Venda`/`ItemVenda`.
+
+Na Vercel, `scripts/build_demo.py` continua criando um banco independente, com as
+mesmas seis contas públicas e senha `demo123`, e agora chama a mesma função de seed.
+O resultado do build tem 11 medicamentos, 14 prescrições (as duas originais mais
+12 novas), 20 itens de prescrição, 3 vendas e 5 itens de venda. O runtime continua
+somente leitura e o comando `seed_demo` recusa execução nesse modo. Para atualizar
+a versão publicada será necessário um novo deploy, após autorização.
+
+Os medicamentos usam nomes/apresentações realistas; fabricantes, vínculos,
+receitas, preços e instruções são fictícios e não têm finalidade clínica.
+
+Validação:
+
+```bash
+venv/bin/python manage.py test
+venv/bin/python scripts/build_demo.py
+venv/bin/python scripts/check_demo.py
+```
+
+Os testes cobrem reexecução, preservação de identidades, reaproveitamento de
+medicamentos, rollback de colisões, relações de dispensação, datas/status, listagens,
+detalhes, acesso por perfil e funcionamento do banco demonstrativo somente leitura.

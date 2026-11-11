@@ -30,8 +30,20 @@
                             <tbody>
                                 {% for prescricao in prescricoes %}
                                 <tr>
-                                    <td>{{ prescricao.medicamento }}</td>
-                                    <td>{{ prescricao.dosagem }}</td>
+                                    <td>
+                                        {% for item in prescricao.itens.all %}
+                                            <div>{{ item.medicamento.nome }}</div>
+                                        {% empty %}
+                                            Nenhum medicamento informado
+                                        {% endfor %}
+                                    </td>
+                                    <td>
+                                        {% for item in prescricao.itens.all %}
+                                            <div>{{ item.medicamento.dosagem }}</div>
+                                        {% empty %}
+                                            —
+                                        {% endfor %}
+                                    </td>
                                     <td>{{ prescricao.data_emissao }}</td>
                                     <td>{{ prescricao.data_validade }}</td>
                                     <td>
@@ -40,7 +52,7 @@
                                         {% elif prescricao.status == "vencida" %}
                                             <span class="badge text-bg-danger">Vencida</span>
                                         {% else %}
-                                            <span class="badge text-bg-secondary">Dispensada</span>
+                                            <span class="badge text-bg-secondary">{{ prescricao.get_status_display }}</span>
                                         {% endif %}
                                     </td>
                                 </tr>
