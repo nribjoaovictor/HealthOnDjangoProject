@@ -1,0 +1,16 @@
+.git
+.aws
+.codex
+.agents
+.vscode
+.env*
+venv
+.venv
+__pycache__
+**/__pycache__
+*.sqlite3
+**/*.sqlite3
+*.sqlite3-*
+**/*.sqlite3-*
+dados_iniciais.json
+staticfiles

@@ -216,3 +216,10 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Deploy artifacts and secrets
+.env.*
+.vercel/
+staticfiles/
+demo/*.sqlite3
+demo/*.sqlite3-*

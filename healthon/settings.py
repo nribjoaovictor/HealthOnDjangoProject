@@ -10,6 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
+import os
+from django.core.exceptions import ImproperlyConfigured
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -19,13 +21,32 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-^)&5=e8=9gm1mx6d*0e%o4#54xv%+)#+&e&o-aykh)dutvw)hi'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
+# Vercel is always a read-only demonstration, including preview deployments.
+READ_ONLY_DEMO = os.environ.get("VERCEL") == "1" or os.environ.get("HEALTHON_READ_ONLY") == "1"
+SECRET_KEY = os.environ.get("SECRET_KEY", "")
+if READ_ONLY_DEMO and len(SECRET_KEY) < 50:
+    raise ImproperlyConfigured("Configure SECRET_KEY com pelo menos 50 caracteres aleatórios.")
+if not SECRET_KEY:
+    SECRET_KEY = "local-development-only-healthon-do-not-use-in-production"
+DEBUG = not READ_ONLY_DEMO
+ALLOWED_HOSTS = [h.strip() for h in os.environ.get("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",") if h.strip()]
+for variable in ("VERCEL_URL", "VERCEL_PROJECT_PRODUCTION_URL"):
+    if os.environ.get(variable):
+        ALLOWED_HOSTS.append(os.environ[variable])
+CSRF_TRUSTED_ORIGINS = [o.strip() for o in os.environ.get("CSRF_TRUSTED_ORIGINS", "").split(",") if o.strip()]
+SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = "Lax"
+SESSION_COOKIE_AGE = 3600
+SESSION_COOKIE_SECURE = READ_ONLY_DEMO
+CSRF_COOKIE_SECURE = READ_ONLY_DEMO
+SECURE_SSL_REDIRECT = READ_ONLY_DEMO
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https") if READ_ONLY_DEMO else None
+SECURE_HSTS_SECONDS = 31536000 if READ_ONLY_DEMO else 0
+SECURE_HSTS_INCLUDE_SUBDOMAINS = READ_ONLY_DEMO
+SECURE_HSTS_PRELOAD = READ_ONLY_DEMO
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = "DENY"
 
 # Application definition
 
@@ -46,6 +67,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'healthon.middleware.ReadOnlyDemoMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -62,6 +84,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'healthon.context_processors.demo',
             ],
         },
     },
@@ -79,6 +102,10 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+if READ_ONLY_DEMO:
+    DATABASES["default"]["NAME"] = (BASE_DIR / "demo" / "demo.sqlite3").as_uri() + "?mode=ro&immutable=1"
+    DATABASES["default"]["OPTIONS"] = {"uri": True}
 
 
 # Password validation
@@ -115,7 +142,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]

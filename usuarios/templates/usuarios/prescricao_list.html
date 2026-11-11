@@ -13,10 +13,10 @@
             </p>
         </div>
 
-        <a href="{% url 'prescricao_create' %}" class="btn btn-success">
+        {% if not read_only_demo and request.session.perfil == "medico" %}<a href="{% url 'prescricao_create' %}" class="btn btn-success">
             <i class="bi bi-plus-circle me-1"></i>
             Nova Prescrição
-        </a>
+        </a>{% endif %}
     </div>
 
     <div class="card border-0 shadow-sm rounded-4">
@@ -70,15 +70,15 @@
                                     Medicamentos
                                 </a>
 
-                                <a href="{% url 'prescricao_update' prescricao.id %}"
+                                {% if not read_only_demo and request.session.perfil == "medico" %}<a href="{% url 'prescricao_update' prescricao.id %}"
                                    class="btn btn-sm btn-outline-primary">
                                     Editar
-                                </a>
+                                </a>{% endif %}
 
-                                <a href="{% url 'prescricao_delete' prescricao.id %}"
+                                {% if not read_only_demo and request.session.perfil == "medico" %}<a href="{% url 'prescricao_delete' prescricao.id %}"
                                    class="btn btn-sm btn-outline-danger">
                                     Excluir
-                                </a>
+                                </a>{% endif %}
 
                             </td>
 
@@ -98,7 +98,7 @@
         </div>
     </div>
 
-    <a href="{% url 'dashboard_medico' %}"
+    <a href="{% if request.session.perfil == 'paciente' %}{% url 'dashboard_paciente' %}{% elif request.session.perfil == 'farmacia' %}{% url 'dashboard_farmacia' %}{% else %}{% url 'dashboard_medico' %}{% endif %}"
        class="btn btn-link mt-3 text-decoration-none">
         Voltar para dashboard
     </a>

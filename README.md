@@ -319,3 +319,134 @@ HealthOn/
 ---
 
 **Projeto desenvolvido para a disciplina de Projeto de Sistemas — IFES Campus Serra.**
+## Demonstração somente leitura na Vercel
+
+A branch `deploy-vercel-readonly` prepara uma demonstração pública com **SQLite**,
+sem PostgreSQL. Nenhum push, merge ou deploy é executado automaticamente por estes
+scripts. O banco local `db.sqlite3` e o fixture legado `dados_iniciais.json` não são
+usados no build de produção nem devem ser enviados à Vercel.
+
+### Desenvolvimento local
+
+Use Python **3.12**, instale `requirements.txt` e execute `python manage.py migrate`
+antes de iniciar o servidor. A nova migração adiciona `Paciente.cadastrado_por`,
+sem remover registros. Os pacientes antigos continuam acessíveis aos médicos que
+já emitiram suas receitas; pacientes sem receitas e sem médico responsável devem
+ser vinculados pelo administrador local. Novos cadastros recebem esse vínculo
+automaticamente. As gravações e o visual local continuam disponíveis, respeitando
+as permissões abaixo. As sessões usam cookies assinados também localmente.
+
+Não defina `VERCEL=1` ou `HEALTHON_READ_ONLY=1` para o desenvolvimento normal.
+O arquivo `.env` não é carregado automaticamente; exporte as variáveis no shell.
+
+### Permissões
+
+- Médico: dashboard com contagens próprias; pacientes cadastrados por ele ou com
+  prescrições emitidas por ele; somente suas prescrições e respectivos itens.
+  Pode consultar e gerenciar o catálogo de medicamentos no ambiente local.
+- Paciente: somente dashboard, listagem e detalhes das próprias prescrições.
+- Farmácia: consulta das prescrições para validação e dispensação, conforme o fluxo
+  acadêmico original; somente seus próprios dados e farmacêuticos. Não acessa o
+  cadastro geral de pacientes nem edita receitas. A consulta global de receitas
+  é uma permissão explícita desse perfil neste sistema de demonstração.
+- Criação de contas de médicos/farmácias: administração Django local (`/admin/`),
+  não pelos perfis clínicos. O perfil farmacêutico não tem dashboard/login próprio.
+- Na demonstração, todas as operações de escrita e os formulários de alteração
+  são bloqueados inclusive por URL, qualquer que seja o perfil. `/admin/` fica
+  indisponível. Apenas views de consulta explicitamente autorizadas e login/logout
+  são executados. Os controles de alteração ficam ocultos na interface.
+
+### Banco fictício e verificação local
+
+```bash
+python scripts/build_demo.py
+python manage.py test
+python scripts/check_demo.py
+```
+
+O primeiro comando cria um banco **novo**, executa as migrações nele e insere dados
+fictícios definidos no próprio script. Não abre/copia o banco local nem lê o fixture
+legado. Cada build substitui `demo/demo.sqlite3`; o artefato é ignorado pelo Git.
+O script de verificação abre esse arquivo com `mode=ro&immutable=1`, testa login,
+logout, dashboards, CSRF, HTTPS, cookies e o bloqueio de todas as rotas de escrita,
+e verifica que o conteúdo do arquivo permaneceu igual. Uma tentativa de escrita
+pelo ORM também precisa falhar com erro de banco somente leitura.
+
+Contas públicas **exclusivamente fictícias**, senha `demo123`:
+
+| Perfil | Documento | Conta adicional para testar isolamento |
+| --- | --- | --- |
+| Médico | `22222222222` | `55555555555` |
+| Paciente | `11111111111` | `44444444444` |
+| Farmácia | `33333333333` | `66666666666` |
+
+As credenciais `123` descritas anteriormente pertencem somente ao fixture legado
+local; esse fixture não é usado na demonstração publicada.
+
+Para simular produção em outro terminal, após gerar o banco:
+
+```bash
+export HEALTHON_READ_ONLY=1
+export SECRET_KEY="$(python -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())')"
+python manage.py check --deploy
+python manage.py collectstatic --noinput
+```
+
+O modo de produção exige HTTPS e cookies seguros; `runserver` HTTP puro não é um
+ambiente de teste de login de produção. `scripts/check_demo.py` usa requisições
+HTTPS simuladas com o cliente Django. Para voltar ao modo local, remova as variáveis
+com `unset HEALTHON_READ_ONLY SECRET_KEY`.
+
+### Publicação, somente após autorização
+
+1. Revise os arquivos e autorize separadamente commit/push e publicação. Conectar
+   um repositório à Vercel pode disparar deploy automaticamente; faça isso apenas
+   após autorizar a publicação.
+2. Importe a raiz do projeto na Vercel com o preset Django. Pela CLI, utilize
+   Vercel CLI **50.38.0 ou superior**. O projeto usa a detecção nativa de `manage.py`
+   e `healthon.wsgi.application`, sem builders legados ou rewrites globais.
+3. Configure as variáveis em **Production e Preview**:
+
+   | Variável | Valor |
+   | --- | --- |
+   | `SECRET_KEY` | Chave aleatória exclusiva, pelo menos 50 caracteres; gere com `get_random_secret_key()` e armazene somente na Vercel |
+   | `ALLOWED_HOSTS` | Hosts exatos separados por vírgula, ex.: `healthon-exemplo.vercel.app,saude.exemplo.com` |
+   | `CSRF_TRUSTED_ORIGINS` | Origens HTTPS exatas, ex.: `https://healthon-exemplo.vercel.app,https://saude.exemplo.com` |
+
+   A Vercel fornece `VERCEL=1`, que força modo somente leitura, `DEBUG=False`, HTTPS,
+   HSTS e cookies seguros. `VERCEL_URL` e `VERCEL_PROJECT_PRODUCTION_URL` acrescentam
+   os hosts exatos gerados pela plataforma. Requisições de mesma origem passam na
+   validação CSRF; inclua origens adicionais somente quando forem necessárias.
+   Não use curingas nem coloque a chave em arquivos versionados.
+4. Mantenha o build definido por `[tool.vercel.scripts]` em `pyproject.toml`:
+   `python scripts/build_demo.py`. Remova eventuais overrides antigos no painel.
+   A Vercel instala as dependências e executa `collectstatic` automaticamente a
+   partir de `STATIC_ROOT`; os estáticos são servidos pelo CDN em `/static/`.
+5. `.vercelignore` exclui bancos preexistentes, ambientes virtuais e diretórios
+   locais, inclusive `.aws`, `.codex`, `.agents` e `.vscode`. `vercel.json` inclui
+   explicitamente apenas o SQLite de demonstração gerado e reforça exclusões no
+   bundle da função. Antes da primeira publicação, inspecione o bundle do build:
+   ele deve conter `demo/demo.sqlite3` e nunca `db.sqlite3`, `dados_iniciais.json`,
+   `.env*` ou diretórios de credenciais. Não faça upload manual do banco original.
+6. Após autorização, publique pela interface ou CLI e confirme no endereço HTTPS:
+   login dos três perfis, consultas, logout, CSS e respostas 403 para alterações.
+   A integração real com o ambiente Vercel só pode ser validada após esse passo.
+
+Referência utilizada: [documentação oficial de Django na Vercel](https://vercel.com/docs/frameworks/full-stack/django).
+A versão de Python está fixada em `.python-version`; mantenha as dependências de
+`pyproject.toml` e `requirements.txt` sincronizadas ao atualizá-las.
+
+### Limitações
+
+- Demonstração estática: cada atualização de dados exige novo build; não há
+  persistência de cadastros, dispensações, auditoria ou recuperação de senha.
+- `UsuarioFake` mantém a autenticação acadêmica com senhas em texto simples. O
+  artefato contém somente senhas públicas fictícias. Este preparo não transforma
+  o sistema em uma aplicação clínica para dados reais.
+- Cookies assinados protegem a integridade, mas não criptografam o conteúdo. Não
+  coloque dados sensíveis na sessão. Logout apaga o cookie do navegador; uma cópia
+  previamente roubada continua utilizável até expirar (uma hora). Não há revogação
+  centralizada sem armazenamento de sessões.
+- `immutable=1` exige que o banco não seja alterado durante a execução da função;
+  o build gera o arquivo completo e o runtime apenas o lê.
+- Bootstrap e Bootstrap Icons continuam usando o CDN externo já existente.

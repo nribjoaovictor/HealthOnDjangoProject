@@ -11,9 +11,7 @@
             <p class="text-muted">Gerencie os médicos cadastrados.</p>
         </div>
 
-        <a href="{% url 'medico_create' %}" class="btn btn-success">
-            Novo Médico
-        </a>
+
     </div>
 
     <div class="card shadow-sm border-0 rounded-4">
@@ -41,15 +39,15 @@
 
                         <td class="text-end">
 
-                            <a href="{% url 'medico_update' medico.id %}"
+                            {% if not read_only_demo %}<a href="{% url 'medico_update' medico.id %}"
                                class="btn btn-sm btn-outline-primary">
                                 Editar
-                            </a>
+                            </a>{% endif %}
 
-                            <a href="{% url 'medico_delete' medico.id %}"
+                            {% if not read_only_demo %}<a href="{% url 'medico_delete' medico.id %}"
                                class="btn btn-sm btn-outline-danger">
                                 Excluir
-                            </a>
+                            </a>{% endif %}
 
                         </td>
                     </tr>

@@ -15,7 +15,8 @@ def login_view(request):
             senha=senha
         ).first()
 
-        if usuario:
+        if usuario and usuario.perfil in {"medico", "paciente", "farmacia"}:
+            request.session.flush()
             request.session["usuario_logado"] = True
             request.session["usuario_nome"] = usuario.nome
             request.session["perfil"] = usuario.perfil
