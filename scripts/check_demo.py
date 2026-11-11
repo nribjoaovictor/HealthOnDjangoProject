@@ -18,7 +18,8 @@ from django.db import connection, OperationalError
 from django.test import Client
 from django.urls import reverse
 from usuarios import urls
-from usuarios.models import PrescricaoMedica, UsuarioFake
+from usuarios.models import PrescricaoMedica, UsuarioFake, Medicamento, Venda
+from usuarios.demo_seed import MARKER
 
 
 class ReadOnlyIntegrationTests(unittest.TestCase):
@@ -47,10 +48,40 @@ class ReadOnlyIntegrationTests(unittest.TestCase):
                     response = self.client.get(reverse(name), secure=True)
                     self.assertEqual(response.status_code, 200, name)
                     self.assertIn('no-store', response.headers['Cache-Control'])
+                    if name == 'dashboard_paciente':
+                        html = response.content.decode()
+                        self.assertIn('<div>Medicamento Fictício</div>', html)
+                        self.assertIn('<div>10 mg</div>', html)
                 own = PrescricaoMedica.objects.get(codigo_identificacao='DEMO-1')
                 self.assertEqual(self.client.get(reverse('prescricao_detail', args=[own.pk]), secure=True).status_code, 200)
                 self.client.get(reverse('logout'), secure=True)
                 self.assertEqual(self.client.get(reverse(views[0]), secure=True).status_code, 302)
+
+    def test_rich_demo_dataset_and_six_original_credentials(self):
+        self.assertEqual(UsuarioFake.objects.count(), 6)
+        self.assertGreaterEqual(Medicamento.objects.count(), 10)
+        seeded = PrescricaoMedica.objects.filter(orientacoes=MARKER)
+        self.assertEqual(seeded.count(), 12)
+        self.assertEqual(set(seeded.values_list('status', flat=True)), {'ativa', 'vencida', 'dispensada', 'cancelada'})
+        self.assertFalse(PrescricaoMedica.objects.filter(itens__isnull=True).exists())
+        self.assertEqual(Venda.objects.filter(observacoes=MARKER).count(), 3)
+        for profile, document in [('medico', '22222222222'), ('medico', '55555555555'),
+                                  ('paciente', '11111111111'), ('paciente', '44444444444'),
+                                  ('farmacia', '33333333333'), ('farmacia', '66666666666')]:
+            self.login(profile, document)
+            for prescription in seeded.select_related('medico', 'paciente'):
+                own = profile == 'farmacia' or (profile == 'medico' and prescription.medico.cpf == document) or (profile == 'paciente' and prescription.paciente.cpf == document)
+                response = self.client.get(reverse('prescricao_detail', args=[prescription.pk]), secure=True)
+                self.assertEqual(response.status_code, 200 if own else 404)
+                if own:
+                    for item in prescription.itens.select_related('medicamento'):
+                        self.assertIn(item.medicamento.nome, response.content.decode())
+                        self.assertIn(item.medicamento.dosagem, response.content.decode())
+            if profile in {'paciente', 'farmacia'}:
+                response = self.client.get(reverse('dashboard_' + profile), secure=True)
+                self.assertIn('Cancelada', response.content.decode())
+                self.assertIn('Dispensada', response.content.decode())
+                self.assertNotIn('Nenhum medicamento informado', response.content.decode())
 
     def test_all_mutation_urls_blocked_for_every_profile(self):
         for profile, document in [('medico', '22222222222'), ('paciente', '11111111111'), ('farmacia', '33333333333')]:

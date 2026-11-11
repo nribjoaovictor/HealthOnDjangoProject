@@ -1,7 +1,7 @@
 from datetime import date
 from django.test import TestCase
 from django.urls import reverse
-from .models import Medico, Paciente, Farmacia, Farmaceutico, UsuarioFake, PrescricaoMedica
+from .models import Medico, Paciente, Farmacia, Farmaceutico, UsuarioFake, PrescricaoMedica, Medicamento, ItemPrescricao
 
 
 class AccessTests(TestCase):
@@ -28,6 +28,42 @@ class AccessTests(TestCase):
         self.assertEqual(self.client.get(reverse('prescricao_detail', args=[self.prescriptions[1].pk])).status_code, 404)
         self.assertEqual(self.client.post(reverse('dispensar_prescricao', args=[self.prescriptions[0].pk])).status_code, 403)
         self.assertQuerySetEqual(self.client.get(reverse('prescricao_list')).context['prescricoes'], [self.prescriptions[0]])
+
+    def test_patient_dashboard_shows_all_own_medicines_and_dosages(self):
+        for name, dose, prescription in [
+            ('Medicamento fictício A', '10 mg', self.prescriptions[0]),
+            ('Medicamento fictício B', '20 mg', self.prescriptions[0]),
+            ('Medicamento de outro paciente', '99 mg', self.prescriptions[1]),
+        ]:
+            medicine = Medicamento.objects.create(nome=name, dosagem=dose, tarja='sem_tarja')
+            ItemPrescricao.objects.create(prescricao=prescription, medicamento=medicine, instrucoes_uso='Demonstração')
+        self.login_as('paciente', 'p0')
+        response = self.client.get(reverse('dashboard_paciente'))
+        self.assertEqual(response.status_code, 200)
+        self.assertQuerySetEqual(response.context['prescricoes'], [self.prescriptions[0]])
+        for value in ['Medicamento fictício A', '10 mg', 'Medicamento fictício B', '20 mg']:
+            self.assertContains(response, f'<div>{value}</div>', html=True)
+        self.assertNotContains(response, 'Medicamento de outro paciente')
+        self.assertNotContains(response, '99 mg')
+        self.assertContains(response, '<th>Emissão</th>', html=True)
+        self.assertContains(response, '<th>Validade</th>', html=True)
+        self.assertContains(response, '<span class="badge text-bg-success">Ativa</span>', html=True)
+        # Rendering related items should use prefetched data, without per-item queries.
+        with self.assertNumQueries(0):
+            for prescription in response.context['prescricoes']:
+                self.assertEqual(len([item.medicamento.dosagem for item in prescription.itens.all()]), 2)
+
+    def test_patient_dashboard_prescription_without_items(self):
+        self.login_as('paciente', 'p0')
+        response = self.client.get(reverse('dashboard_paciente'))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Nenhum medicamento informado')
+
+    def test_patient_dashboard_without_prescriptions(self):
+        self.prescriptions[0].delete()
+        self.login_as('paciente', 'p0')
+        response = self.client.get(reverse('dashboard_paciente'))
+        self.assertContains(response, 'Nenhuma prescrição encontrada.')
 
     def test_doctor_isolation(self):
         self.login_as('medico', 'm0')
