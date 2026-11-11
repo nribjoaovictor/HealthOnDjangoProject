@@ -99,7 +99,8 @@
     </div>
 
     <a href="{% if request.session.perfil == 'paciente' %}{% url 'dashboard_paciente' %}{% elif request.session.perfil == 'farmacia' %}{% url 'dashboard_farmacia' %}{% else %}{% url 'dashboard_medico' %}{% endif %}"
-       class="btn btn-link mt-3 text-decoration-none">
+       class="btn btn-outline-secondary mt-3">
+        <i class="bi bi-arrow-left me-1" aria-hidden="true"></i>
         Voltar para dashboard
     </a>
 

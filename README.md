@@ -318,6 +318,9 @@ HealthOn/
 - João Victor Santos Araújo
 ---
 
+# Parte Vercel - Executar a partir daqui
+-----
+
 **Projeto desenvolvido para a disciplina de Projeto de Sistemas — IFES Campus Serra.**
 ## Demonstração somente leitura na Vercel
 
